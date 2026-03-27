@@ -6,74 +6,7 @@
 <title>Guide — WhatsApp Share + Translate</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0c0f;--surface:#111418;--surface2:#171c23;--border:#222a35;
-  --accent:#25D366;--glow:rgba(37,211,102,.15);
-  --text:#eef1f5;--muted:#5e6e80;--mid:#94a3b6;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;min-height:100vh}
-.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.icon svg{display:block}
-.hero{background:linear-gradient(160deg,#071210 0%,#0a0c0f 65%);border-bottom:1px solid var(--border);padding:64px 40px 52px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:340px;background:radial-gradient(ellipse,rgba(37,211,102,.16) 0%,transparent 68%);pointer-events:none}
-.hero-logo{width:72px;height:72px;margin:0 auto 22px;background:linear-gradient(145deg,#1fba58,#128C7E);border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(37,211,102,.35);animation:float 3.5s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 25%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
-.hero p{color:var(--mid);font-size:15.5px;max-width:460px;margin:0 auto 26px}
-.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:20px;padding:5px 13px;color:var(--mid);background:var(--surface)}
-.badge.green{border-color:rgba(37,211,102,.4);color:var(--accent);background:var(--glow)}
-.container{max-width:800px;margin:0 auto;padding:52px 28px 90px}
-section{margin-bottom:56px}
-.section-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:20px}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}
-.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s,transform .2s}
-.feature-card:hover{border-color:rgba(37,211,102,.4);transform:translateY(-2px)}
-.feature-card-icon{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.feature-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px}
-.feature-card p{font-size:13px;color:var(--mid);line-height:1.6}
-.steps{display:flex;flex-direction:column}
-.step{display:grid;grid-template-columns:52px 1fr;gap:0 18px;padding:22px 0;border-bottom:1px solid var(--border)}
-.step:last-child{border-bottom:none}
-.step-num{display:flex;align-items:flex-start;justify-content:center;padding-top:2px}
-.step-circle{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--accent);flex-shrink:0;transition:all .3s}
-.step:hover .step-circle{background:var(--glow);border-color:var(--accent);box-shadow:0 0 14px rgba(37,211,102,.25)}
-.step-body h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:7px}
-.step-body p{color:var(--mid);font-size:14px;line-height:1.65}
-code{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:1px 7px;font-size:12.5px;color:#a8c5a0;font-family:monospace}
-.code-block{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
-.code-bar{background:var(--surface2);padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.code-bar span{font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;letter-spacing:.06em;text-transform:uppercase}
-.code-bar button{font-size:11px;color:var(--mid);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s}
-.code-bar button:hover{color:var(--accent)}
-pre{padding:14px 16px;font-size:13px;color:#a8c5a0;line-height:1.6;overflow-x:auto;font-family:monospace}
-.lang-grid{display:flex;flex-wrap:wrap;gap:8px}
-.lang-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:13px}
-.alert{display:flex;gap:13px;align-items:flex-start;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:15px 17px;margin:18px 0}
-.alert p{font-size:13.5px;color:#fbbf24;line-height:1.65}
-.alert p strong{font-weight:600}
-.tip{display:flex;gap:13px;align-items:flex-start;background:var(--glow);border:1px solid rgba(37,211,102,.22);border-radius:11px;padding:15px 17px;margin:18px 0}
-.tip p{font-size:13.5px;color:#86efac;line-height:1.65}
-.changelog{display:flex;flex-direction:column;gap:10px}
-.change-row{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 16px}
-.change-tag{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;padding:3px 8px;white-space:nowrap;flex-shrink:0;margin-top:2px}
-.tag-fix{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25)}
-.tag-feat{background:rgba(37,211,102,.12);color:var(--accent);border:1px solid rgba(37,211,102,.25)}
-.tag-remove{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.25)}
-.change-row p{font-size:13.5px;color:var(--mid);line-height:1.6}
-.change-row p strong{color:var(--text);font-weight:500}
-.cta-box{background:linear-gradient(135deg,#0c1c13 0%,#0a0f0d 100%);border:1px solid rgba(37,211,102,.28);border-radius:18px;padding:36px;text-align:center;position:relative;overflow:hidden}
-.cta-box::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(37,211,102,.12) 0%,transparent 70%)}
-.cta-box h2{font-size:20px;margin-bottom:9px}
-.cta-box p{color:var(--mid);font-size:14px}
-.sep{display:flex;align-items:center;gap:12px;margin:44px 0}
-.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border)}
-.sep span{font-size:10px;color:var(--muted);font-family:'Syne',sans-serif;letter-spacing:.1em;text-transform:uppercase}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -356,5 +289,30 @@ pre{padding:14px 16px;font-size:13px;color:#a8c5a0;line-height:1.6;overflow-x:au
   </div>
 
 </div>
+
+<footer>
+  <div class="footer-brand">
+    Créé par <a href="https://lassanasiby.com/" target="_blank" rel="noopener">Lassana Siby</a>
+  </div>
+  <div class="social-links">
+    <a href="https://instagram.com/siby_global" target="_blank" rel="noopener" class="social-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Instagram
+    </a>
+    <a href="https://x.com/sibyog13" target="_blank" rel="noopener" class="social-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X 
+    </a>
+    <a href="https://github.com/sibylassana95" target="_blank" rel="noopener" class="social-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://www.linkedin.com/in/sibylassana/" target="_blank" rel="noopener" class="social-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</footer>
+
 </body>
 </html>
