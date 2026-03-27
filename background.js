@@ -18,8 +18,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (selectedText) {
       // Texte sélectionné → traduire et partager
       const translated = await translateText(selectedText, "fr");
-      const message = `${translated}\n\n🔗 ${pageUrl}`;
-      openWhatsApp(message);
+      openWhatsApp(translated);
     } else {
       // Pas de sélection → récupérer le titre de la page et le traduire
       chrome.scripting.executeScript(
@@ -28,8 +27,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           const meta = results?.[0]?.result || { title: tab.title, description: "" };
           const textToTranslate = `${meta.title}. ${meta.description}`.trim();
           const translated = await translateText(textToTranslate, "fr");
-          const message = `${translated}\n\n🔗 ${pageUrl}`;
-          openWhatsApp(message);
+          openWhatsApp(translated);
         }
       );
     }
@@ -51,8 +49,7 @@ async function handleShare({ url, title, description, selectedText, targetLang }
       : `${title}. ${description}`.trim();
 
     const translated = await translateText(textToTranslate, targetLang || "fr");
-    const message = `${translated}\n\n🔗 ${url}`;
-    openWhatsApp(message);
+    openWhatsApp(translated);
     return { success: true };
   } catch (e) {
     return { success: false, error: e.message };
@@ -63,16 +60,24 @@ async function handleShare({ url, title, description, selectedText, targetLang }
 async function translateText(text, targetLang) {
   if (!text || text.trim() === "") return text;
 
-  // Découpe le texte si trop long
-  const chunks = splitText(text, 4000);
+  // 1. Extraire les URLs et les remplacer par des marqueurs __URL_0__, __URL_1__...
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = [];
+  const textWithPlaceholders = text.replace(urlRegex, (match) => {
+    const index = urls.length;
+    urls.push(match);
+    return `__URL_${index}__`;
+  });
+
+  // 2. Traduire le texte sans les URLs
+  const chunks = splitText(textWithPlaceholders, 4000);
   const translatedChunks = [];
 
   for (const chunk of chunks) {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(chunk)}`;
-    const response = await fetch(url);
+    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(chunk)}`;
+    const response = await fetch(apiUrl);
     const data = await response.json();
 
-    // La réponse est un tableau imbriqué
     const translated = data[0]
       .filter(item => item && item[0])
       .map(item => item[0])
@@ -81,7 +86,13 @@ async function translateText(text, targetLang) {
     translatedChunks.push(translated);
   }
 
-  return translatedChunks.join(" ");
+  // 3. Remettre les URLs originales a la place des marqueurs
+  let result = translatedChunks.join(" ");
+  urls.forEach((originalUrl, index) => {
+    result = result.replace(new RegExp(`__URL_${index}__`, "g"), originalUrl);
+  });
+
+  return result;
 }
 
 // Découpe le texte en morceaux
@@ -101,10 +112,18 @@ function splitText(text, maxLength) {
   return chunks.length > 0 ? chunks : [text];
 }
 
-// Ouvre WhatsApp Web avec le message pré-rempli
-function openWhatsApp(message) {
+// Ouvre WhatsApp — app desktop ou web selon le réglage sauvegardé
+async function openWhatsApp(message) {
   const encoded = encodeURIComponent(message);
-  chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
+  const { waMode } = await chrome.storage.local.get({ waMode: "app" });
+
+  if (waMode === "app") {
+    // Tente d'ouvrir l'app WhatsApp Desktop via le protocole whatsapp://
+    // Fonctionne sur Windows et Mac si WhatsApp Desktop est installé
+    chrome.tabs.create({ url: `whatsapp://send?text=${encoded}` });
+  } else {
+    chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
+  }
 }
 
 // Fonction injectée dans la page pour récupérer le titre et la description

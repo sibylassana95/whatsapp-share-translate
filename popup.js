@@ -1,15 +1,18 @@
 // popup.js
 
-const langSelect = document.getElementById("langSelect");
-const previewContent = document.getElementById("previewContent");
-const btnShare = document.getElementById("btnShare");
-const btnText = document.getElementById("btnText");
-const sourceUrl = document.getElementById("sourceUrl");
-const statusEl = document.getElementById("status");
-const langLabel = document.getElementById("langLabel");
+const langSelect    = document.getElementById("langSelect");
+const previewContent= document.getElementById("previewContent");
+const btnShare      = document.getElementById("btnShare");
+const btnText       = document.getElementById("btnText");
+const sourceUrl     = document.getElementById("sourceUrl");
+const statusEl      = document.getElementById("status");
+const langLabel     = document.getElementById("langLabel");
+const modeApp       = document.getElementById("modeApp");
+const modeWeb       = document.getElementById("modeWeb");
 
 let pageData = null;
 let translatedText = "";
+let currentMode = "app"; // "app" | "web"
 
 const LANG_LABELS = {
   fr: "FR", en: "EN", es: "ES", de: "DE",
@@ -18,11 +21,13 @@ const LANG_LABELS = {
 
 // ── Initialisation ──────────────────────────────────────────────────────────
 async function init() {
+  const { waMode } = await chrome.storage.local.get({ waMode: "app" });
+  setMode(waMode, false);
+
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     sourceUrl.textContent = new URL(tab.url).hostname;
 
-    // Récupérer les données de la page via content script
     const data = await chrome.tabs.sendMessage(tab.id, { action: "getPageData" });
     pageData = { ...data, url: tab.url };
 
@@ -32,6 +37,22 @@ async function init() {
   }
 }
 
+// ── Mode App / Web ──────────────────────────────────────────────────────────
+function setMode(mode, save = true) {
+  currentMode = mode;
+  if (mode === "app") {
+    modeApp.classList.add("active");
+    modeWeb.classList.remove("active");
+  } else {
+    modeWeb.classList.add("active");
+    modeApp.classList.remove("active");
+  }
+  if (save) chrome.storage.local.set({ waMode: mode });
+}
+
+modeApp.addEventListener("click", () => setMode("app"));
+modeWeb.addEventListener("click", () => setMode("web"));
+
 // ── Traduction & aperçu ────────────────────────────────────────────────────
 async function translateAndPreview() {
   if (!pageData) return;
@@ -39,7 +60,6 @@ async function translateAndPreview() {
   const targetLang = langSelect.value;
   langLabel.textContent = LANG_LABELS[targetLang] || targetLang.toUpperCase();
 
-  // Texte à traduire : sélection > tweet > titre + description
   const raw = pageData.selectedText
     || pageData.tweetText
     || `${pageData.title}. ${pageData.description}`.trim();
@@ -53,7 +73,6 @@ async function translateAndPreview() {
     return;
   }
 
-  // Affiche le spinner
   previewContent.className = "preview-content loading";
   previewContent.innerHTML = `<div class="spinner"></div><span>Traduction en cours…</span>`;
   btnShare.disabled = true;
@@ -70,7 +89,7 @@ async function translateAndPreview() {
     btnShare.querySelector("span").textContent = "📲";
   } catch (e) {
     previewContent.className = "preview-content";
-    previewContent.textContent = raw; // fallback : texte original
+    previewContent.textContent = raw;
     translatedText = raw;
     showStatus("⚠️ Traduction échouée, partage sans traduction", "error");
     btnShare.disabled = false;
@@ -81,27 +100,50 @@ async function translateAndPreview() {
 
 // ── Traduction via Google (gratuit, sans clé) ──────────────────────────────
 async function translateText(text, targetLang) {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text.slice(0, 4000))}`;
-  const res = await fetch(url);
+  // 1. Extraire les URLs et les remplacer par des marqueurs
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = [];
+  const textWithPlaceholders = text.replace(urlRegex, (match) => {
+    const index = urls.length;
+    urls.push(match);
+    return `__URL_${index}__`;
+  });
+
+  // 2. Traduire le texte sans les URLs
+  const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(textWithPlaceholders.slice(0, 4000))}`;
+  const res = await fetch(apiUrl);
   const data = await res.json();
-  return data[0]
+  let result = data[0]
     .filter(item => item && item[0])
     .map(item => item[0])
     .join("");
+
+  // 3. Remettre les URLs originales a la place des marqueurs
+  urls.forEach((originalUrl, index) => {
+    result = result.replace(new RegExp(`__URL_${index}__`, "g"), originalUrl);
+  });
+
+  return result;
 }
 
 // ── Partage WhatsApp ───────────────────────────────────────────────────────
 btnShare.addEventListener("click", () => {
   if (!pageData) return;
 
-  const message = translatedText
-    ? `${translatedText}\n\n🔗 ${pageData.url}`
-    : `🔗 ${pageData.url}`;
+  // On partage uniquement le texte traduit, sans le lien
+  const message = translatedText || pageData.url;
 
   const encoded = encodeURIComponent(message);
-  chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
 
-  showStatus("✅ Ouverture de WhatsApp Web…", "success");
+  if (currentMode === "app") {
+    // whatsapp:// ouvre l'app desktop sur Windows et macOS
+    chrome.tabs.create({ url: `whatsapp://send?text=${encoded}` });
+    showStatus("✅ Ouverture de WhatsApp…", "success");
+  } else {
+    chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
+    showStatus("✅ Ouverture de WhatsApp Web…", "success");
+  }
+
   setTimeout(() => window.close(), 1200);
 });
 

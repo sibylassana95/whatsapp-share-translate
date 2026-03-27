@@ -9,6 +9,7 @@
     "contextMenus",
     "storage"
   ],
+
   "host_permissions": [
     "https://translate.googleapis.com/*",
     "https://*/*",
