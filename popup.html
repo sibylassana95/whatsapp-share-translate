@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Share + Translate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f12;
+      --surface: #161a20;
+      --surface2: #1e242d;
+      --border: #2a3140;
+      --accent: #25D366;
+      --accent2: #128C7E;
+      --accent-glow: rgba(37, 211, 102, 0.15);
+      --text: #eef1f5;
+      --text-muted: #6b7a8d;
+      --text-mid: #a8b3c2;
+      --danger: #ff5c5c;
+      --radius: 12px;
+    }
+
+    body {
+      width: 360px;
+      min-height: 200px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #0f1a14 0%, #0d1a17 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -20px;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(37,211,102,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .logo {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(37,211,102,0.4);
+    }
+    .header-text h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .header-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ── BODY ── */
+    .body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* ── DETECTED SOURCE ── */
+    .source-badge {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+    .source-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,211,102,0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(37,211,102,0); }
+    }
+    .source-url {
+      color: var(--text-mid);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+
+    /* ── PREVIEW CARD ── */
+    .preview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .preview-header {
+      background: var(--surface2);
+      padding: 8px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .preview-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .preview-lang {
+      font-size: 10px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(37,211,102,0.3);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-weight: 500;
+    }
+    .preview-content {
+      padding: 10px 12px;
+      min-height: 60px;
+      font-size: 12.5px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+    .preview-content.loading {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── LANGUAGE SELECTOR ── */
+    .lang-section {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .lang-section label {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .lang-select {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      padding: 6px 9px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .lang-select:focus { border-color: var(--accent); }
+    .lang-select option { background: var(--surface2); }
+
+    /* ── SHARE BUTTON ── */
+    .btn-share {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      padding: 11px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-share::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn-share:hover::after { background: rgba(255,255,255,0.1); }
+    .btn-share:active { transform: scale(0.98); }
+    .btn-share:disabled {
+      background: var(--surface2);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+    .btn-share:disabled::after { display: none; }
+
+    /* ── STATUS ── */
+    .status {
+      font-size: 11.5px;
+      text-align: center;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+      min-height: 16px;
+    }
+    .status.success { color: var(--accent); }
+    .status.error { color: var(--danger); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+    .divider span {
+      font-size: 10px; color: var(--text-muted);
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-tip {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+    .footer-tip strong { color: var(--text-mid); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">📱</div>
+    <div class="header-text">
+      <h1>WhatsApp Share + Translate</h1>
+      <p>Partage & traduit en un clic</p>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="source-badge">
+      <div class="source-dot"></div>
+      <span class="source-url" id="sourceUrl">Chargement…</span>
+    </div>
+
+    <div class="preview-card">
+      <div class="preview-header">
+        <span class="preview-label">Aperçu traduit</span>
+        <span class="preview-lang" id="langLabel">FR</span>
+      </div>
+      <div class="preview-content loading" id="previewContent">
+        <div class="spinner"></div>
+        <span>Récupération du contenu…</span>
+      </div>
+    </div>
+
+    <div class="lang-section">
+      <label>Traduire en :</label>
+      <select class="lang-select" id="langSelect">
+        <option value="fr" selected>🇫🇷 Français</option>
+        <option value="en">🇬🇧 Anglais</option>
+        <option value="es">🇪🇸 Espagnol</option>
+        <option value="de">🇩🇪 Allemand</option>
+        <option value="it">🇮🇹 Italien</option>
+        <option value="pt">🇵🇹 Portugais</option>
+        <option value="ar">🇸🇦 Arabe</option>
+        <option value="zh">🇨🇳 Chinois</option>
+        <option value="ja">🇯🇵 Japonais</option>
+      </style>
+      </select>
+    </div>
+
+    <button class="btn-share" id="btnShare" disabled>
+      <span>⏳</span>
+      <span id="btnText">Préparation…</span>
+    </button>
+
+    <div class="status" id="status"></div>
+
+    <div class="divider"><span>ASTUCE</span></div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-tip">
+      <strong>Clic droit</strong> sur une sélection pour partager un extrait
+    </span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
