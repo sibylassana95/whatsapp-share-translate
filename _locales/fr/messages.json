@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Share & Translate",
+    "description": "Nom de l'extension"
+  },
+  "appShortName": {
+    "message": "Share & Translate",
+    "description": "Nom court"
+  },
+  "appDescription": {
+    "message": "Partagez n'importe quelle page web sur WhatsApp, LinkedIn ou X avec traduction automatique en un clic.",
+    "description": "Description de l'extension"
+  }
+}

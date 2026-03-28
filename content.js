@@ -1,24 +1,33 @@
-// content.js — Script injecté dans chaque page
+// content.js — Share & Translate v3.0
 
-// Écoute les messages depuis le popup ou le background
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getPageData") {
     const selectedText = window.getSelection().toString().trim();
     const title = document.title || "";
 
     const descMeta =
-      document.querySelector('meta[name="description"]') ||
       document.querySelector('meta[property="og:description"]') ||
+      document.querySelector('meta[name="description"]') ||
       document.querySelector('meta[name="twitter:description"]');
     const description = descMeta ? descMeta.getAttribute("content") : "";
 
-    // Pour X.com : essayer de récupérer le texte du tweet
+    // X.com / Twitter : extraire le texte du tweet affiché
     let tweetText = "";
-    if (window.location.hostname.includes("x.com") || window.location.hostname.includes("twitter.com")) {
-      const tweetEl =
+    const host = window.location.hostname;
+    if (host.includes("x.com") || host.includes("twitter.com")) {
+      const el =
         document.querySelector('[data-testid="tweetText"]') ||
         document.querySelector('article [lang]');
-      if (tweetEl) tweetText = tweetEl.innerText.trim();
+      if (el) tweetText = el.innerText.trim();
+    }
+
+    // LinkedIn : extraire le texte d'un post si ouvert
+    let linkedinPostText = "";
+    if (host.includes("linkedin.com")) {
+      const el =
+        document.querySelector('.feed-shared-update-v2__description') ||
+        document.querySelector('.attributed-text-segment-list__content');
+      if (el) linkedinPostText = el.innerText.trim();
     }
 
     sendResponse({
@@ -26,6 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       title,
       description,
       tweetText,
+      linkedinPostText,
       url: window.location.href
     });
   }

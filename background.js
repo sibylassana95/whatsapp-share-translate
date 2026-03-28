@@ -1,75 +1,120 @@
-// background.js — Service Worker de l'extension
+// background.js — Share & Translate v3.0
+// Supporte WhatsApp, LinkedIn, X (Twitter)
 
-// Création du menu contextuel (clic droit)
+// ── Menu contextuel (clic droit) ────────────────────────────────────────────
 chrome.runtime.onInstalled.addListener(() => {
+  // Menu parent
+  chrome.contextMenus.create({
+    id: "shareTranslate",
+    title: "Share & Translate",
+    contexts: ["page", "selection", "link"]
+  });
+  // Sous-menus par plateforme
   chrome.contextMenus.create({
     id: "shareWhatsApp",
-    title: "📱 Partager sur WhatsApp (traduit en français)",
+    parentId: "shareTranslate",
+    title: "Partager sur WhatsApp",
+    contexts: ["page", "selection", "link"]
+  });
+  chrome.contextMenus.create({
+    id: "shareLinkedIn",
+    parentId: "shareTranslate",
+    title: "Partager sur LinkedIn",
+    contexts: ["page", "selection", "link"]
+  });
+  chrome.contextMenus.create({
+    id: "shareX",
+    parentId: "shareTranslate",
+    title: "Partager sur X",
     contexts: ["page", "selection", "link"]
   });
 });
 
-// Gestion du clic sur le menu contextuel
+// ── Clic sur menu contextuel ─────────────────────────────────────────────────
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === "shareWhatsApp") {
-    const pageUrl = info.linkUrl || tab.url;
-    const selectedText = info.selectionText || "";
+  const platformMap = {
+    shareWhatsApp: "whatsapp",
+    shareLinkedIn: "linkedin",
+    shareX: "x"
+  };
+  const platform = platformMap[info.menuItemId];
+  if (!platform) return;
 
-    if (selectedText) {
-      // Texte sélectionné → traduire et partager
-      const translated = await translateText(selectedText, "fr");
-      openWhatsApp(translated);
-    } else {
-      // Pas de sélection → récupérer le titre de la page et le traduire
-      chrome.scripting.executeScript(
-        { target: { tabId: tab.id }, func: getPageMeta },
-        async (results) => {
-          const meta = results?.[0]?.result || { title: tab.title, description: "" };
-          const textToTranslate = `${meta.title}. ${meta.description}`.trim();
-          const translated = await translateText(textToTranslate, "fr");
-          openWhatsApp(translated);
-        }
-      );
-    }
+  const pageUrl = info.linkUrl || tab.url;
+  const selectedText = info.selectionText || "";
+
+  const { defaultLang } = await chrome.storage.local.get({ defaultLang: "fr" });
+
+  if (selectedText) {
+    const translated = await translateText(selectedText, defaultLang);
+    openPlatform(platform, translated, pageUrl);
+  } else {
+    chrome.scripting.executeScript(
+      { target: { tabId: tab.id }, func: getPageMeta },
+      async (results) => {
+        const meta = results?.[0]?.result || { title: tab.title, description: "" };
+        const raw = `${meta.title}. ${meta.description}`.trim();
+        const translated = await translateText(raw, defaultLang);
+        openPlatform(platform, translated, pageUrl);
+      }
+    );
   }
 });
 
-// Écoute des messages depuis le popup
+// ── Messages depuis le popup ──────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "sharePage") {
     handleShare(request).then(sendResponse);
-    return true; // réponse asynchrone
+    return true;
   }
 });
 
-async function handleShare({ url, title, description, selectedText, targetLang }) {
+async function handleShare({ platform, text, url, targetLang }) {
   try {
-    const textToTranslate = selectedText
-      ? selectedText
-      : `${title}. ${description}`.trim();
-
-    const translated = await translateText(textToTranslate, targetLang || "fr");
-    openWhatsApp(translated);
+    const translated = await translateText(text, targetLang || "fr");
+    openPlatform(platform, translated, url);
     return { success: true };
   } catch (e) {
     return { success: false, error: e.message };
   }
 }
 
-// Traduction via l'API Google Translate (gratuite, sans clé)
+// ── Ouvre la bonne plateforme ─────────────────────────────────────────────────
+async function openPlatform(platform, text, pageUrl) {
+  const encoded = encodeURIComponent(text);
+  const urlEncoded = encodeURIComponent(pageUrl || "");
+
+  if (platform === "whatsapp") {
+    const { waMode } = await chrome.storage.local.get({ waMode: "app" });
+    if (waMode === "app") {
+      chrome.tabs.create({ url: `whatsapp://send?text=${encoded}` });
+    } else {
+      chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
+    }
+  } else if (platform === "linkedin") {
+    // LinkedIn Share URL — pré-remplit le champ texte + URL de la page
+    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${urlEncoded}&summary=${encoded}`;
+    chrome.tabs.create({ url: linkedinUrl });
+  } else if (platform === "x") {
+    // X (Twitter) — pré-remplit le tweet avec le texte traduit
+    const xUrl = `https://x.com/intent/tweet?text=${encoded}`;
+    chrome.tabs.create({ url: xUrl });
+  }
+}
+
+// ── Traduction Google Translate (sans clé API) ────────────────────────────────
 async function translateText(text, targetLang) {
   if (!text || text.trim() === "") return text;
 
-  // 1. Extraire les URLs et les remplacer par des marqueurs __URL_0__, __URL_1__...
+  // Extraire les URLs pour ne pas les traduire
   const urlRegex = /https?:\/\/[^\s]+/g;
   const urls = [];
   const textWithPlaceholders = text.replace(urlRegex, (match) => {
-    const index = urls.length;
+    const i = urls.length;
     urls.push(match);
-    return `__URL_${index}__`;
+    return `__URL_${i}__`;
   });
 
-  // 2. Traduire le texte sans les URLs
   const chunks = splitText(textWithPlaceholders, 4000);
   const translatedChunks = [];
 
@@ -77,60 +122,46 @@ async function translateText(text, targetLang) {
     const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(chunk)}`;
     const response = await fetch(apiUrl);
     const data = await response.json();
-
     const translated = data[0]
       .filter(item => item && item[0])
       .map(item => item[0])
       .join("");
-
     translatedChunks.push(translated);
   }
 
-  // 3. Remettre les URLs originales a la place des marqueurs
   let result = translatedChunks.join(" ");
-  urls.forEach((originalUrl, index) => {
-    result = result.replace(new RegExp(`__URL_${index}__`, "g"), originalUrl);
+  urls.forEach((url, i) => {
+    result = result.replace(new RegExp(`__URL_${i}__`, "g"), url);
   });
 
   return result;
 }
 
-// Découpe le texte en morceaux
+// ── Découpe le texte en morceaux ───────────────────────────────────────────────
 function splitText(text, maxLength) {
+  if (text.length <= maxLength) return [text];
   const chunks = [];
   let current = "";
   const sentences = text.split(/(?<=[.!?])\s+/);
-  for (const sentence of sentences) {
-    if ((current + sentence).length > maxLength) {
+  for (const s of sentences) {
+    if ((current + s).length > maxLength) {
       if (current) chunks.push(current.trim());
-      current = sentence;
+      current = s;
     } else {
-      current += (current ? " " : "") + sentence;
+      current += (current ? " " : "") + s;
     }
   }
   if (current) chunks.push(current.trim());
   return chunks.length > 0 ? chunks : [text];
 }
 
-// Ouvre WhatsApp — app desktop ou web selon le réglage sauvegardé
-async function openWhatsApp(message) {
-  const encoded = encodeURIComponent(message);
-  const { waMode } = await chrome.storage.local.get({ waMode: "app" });
-
-  if (waMode === "app") {
-    // Tente d'ouvrir l'app WhatsApp Desktop via le protocole whatsapp://
-    // Fonctionne sur Windows et Mac si WhatsApp Desktop est installé
-    chrome.tabs.create({ url: `whatsapp://send?text=${encoded}` });
-  } else {
-    chrome.tabs.create({ url: `https://web.whatsapp.com/send?text=${encoded}` });
-  }
-}
-
-// Fonction injectée dans la page pour récupérer le titre et la description
+// ── Récupère meta de la page (injecté dans le tab) ────────────────────────────
 function getPageMeta() {
   const title = document.title || "";
-  const descMeta = document.querySelector('meta[name="description"]') ||
-                   document.querySelector('meta[property="og:description"]');
+  const descMeta =
+    document.querySelector('meta[name="description"]') ||
+    document.querySelector('meta[property="og:description"]') ||
+    document.querySelector('meta[name="twitter:description"]');
   const description = descMeta ? descMeta.getAttribute("content") : "";
   return { title, description };
 }

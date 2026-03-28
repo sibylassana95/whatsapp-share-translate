@@ -104,8 +104,9 @@ whatsapp-share-translate/
 ├── background.js      # Script d'arrière-plan
 ├── popup.html         # Interface du popup
 ├── popup.js           # Logique du popup
-├── styles.css         # Styles du popup
+├── styles.css         # Styles CSS externes
 ├── index.html         # Guide d'utilisation
+├── favicon.png        # Favicon de l'extension
 └── icons/             # Icônes de l'extension
 ```
 
