@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guide — WhatsApp Share + Translate</title>
+<title>Guide — Share &amp; Translate</title>
 <link rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -13,19 +13,22 @@
 
 <div class="hero">
   <div class="hero-logo">
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 4C11.163 4 4 11.163 4 20c0 2.955.79 5.724 2.17 8.113L4 36l8.14-2.136A15.93 15.93 0 0020 36c8.837 0 16-7.163 16-16S28.837 4 20 4z" fill="white" fill-opacity=".15"/>
-      <path d="M28.5 24.4c-.4-.2-2.3-1.1-2.6-1.3-.3-.1-.6-.2-.8.2-.3.4-1 1.3-1.2 1.5-.2.2-.5.3-.9.1-.4-.2-1.7-.6-3.2-2-1.2-1.1-2-2.4-2.2-2.8-.2-.4 0-.6.2-.8l.6-.7c.2-.2.2-.4.3-.6.1-.2 0-.4-.1-.6-.1-.2-1-2.3-1.3-3.1-.3-.8-.7-.7-1-.7h-.7c-.2 0-.6.1-.9.5-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.3 3.4 1.4 3.6.1.2 2.4 3.8 5.9 5.3 3.4 1.5 3.4 1 4 .9.6 0 1.9-.8 2.1-1.5.3-.7.3-1.3.2-1.5z" fill="white"/>
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+      <circle cx="5" cy="12" r="2.8" fill="white" fill-opacity=".9"/>
+      <circle cx="19" cy="5" r="2.8" fill="white" fill-opacity=".9"/>
+      <circle cx="19" cy="19" r="2.8" fill="white" fill-opacity=".9"/>
+      <line x1="5" y1="12" x2="19" y2="5" stroke="white" stroke-opacity=".6" stroke-width="1.6"/>
+      <line x1="5" y1="12" x2="19" y2="19" stroke="white" stroke-opacity=".6" stroke-width="1.6"/>
     </svg>
   </div>
-  <h1>WhatsApp Share + Translate</h1>
-  <p>Extension Chrome pour partager n'importe quelle page web vers WhatsApp, avec traduction automatique.</p>
+  <h1>Share &amp; Translate</h1>
+  <p>Extension Chrome pour partager n'importe quelle page web vers WhatsApp, LinkedIn ou X, avec traduction automatique.</p>
   <div class="badges">
     <span class="badge green">Gratuit</span>
     <span class="badge">Chrome 88+</span>
     <span class="badge">Manifest V3</span>
     <span class="badge">Sans clé API</span>
-    <span class="badge">v2.1</span>
+    <span class="badge">v3.0</span>
   </div>
 </div>
 
@@ -35,6 +38,18 @@
     <div class="section-label">Nouveautés</div>
     <h2>Historique des versions</h2>
     <div class="changelog">
+      <div class="change-row">
+        <span class="change-tag tag-feat">v3.0</span>
+        <p><strong>Multi-plateformes :</strong> partage vers WhatsApp, LinkedIn et X via 3 boutons dans le popup et sous-menus dans le clic droit.</p>
+      </div>
+      <div class="change-row">
+        <span class="change-tag tag-feat">v3.0</span>
+        <p><strong>Support LinkedIn :</strong> extraction automatique du texte des posts LinkedIn. Partage via la boîte officielle LinkedIn.</p>
+      </div>
+      <div class="change-row">
+        <span class="change-tag tag-feat">v3.0</span>
+        <p><strong>Chrome Web Store :</strong> extension préparée pour publication — Manifest V3 complet, <code>_locales</code> FR + EN, icônes 4 tailles.</p>
+      </div>
       <div class="change-row">
         <span class="change-tag tag-feat">v2.1</span>
         <p><strong>URLs préservées :</strong> les liens présents dans le texte ne sont plus traduits — ils restent intacts dans le message final.</p>
@@ -87,6 +102,14 @@
 
       <div class="feature-card">
         <div class="feature-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </div>
+        <h3>Support LinkedIn</h3>
+        <p>Extrait le texte des posts LinkedIn et partage via la boîte officielle avec le contenu traduit pré-rempli.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M4 9h10"/><path d="M4 13h7"/><path d="M14 14l3 3-1.5 1.5L13 16"/><path d="M17 17l3 3"/></svg>
         </div>
         <h3>Partage de sélection</h3>
@@ -106,7 +129,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
         </div>
         <h3>App ou Web</h3>
-        <p>Ouvre WhatsApp Desktop ou WhatsApp Web selon votre préférence mémorisée.</p>
+        <p>WhatsApp : choisissez entre App Desktop et Web. LinkedIn et X ouvrent leur interface native de partage.</p>
       </div>
 
     </div>
@@ -131,7 +154,7 @@
         <div class="step-num"><div class="step-circle">1</div></div>
         <div class="step-body">
           <h3>Télécharger et décompresser</h3>
-          <p>Téléchargez <code>whatsapp-share-translate.zip</code> et décompressez-le dans un dossier permanent (ex. : <code>Documents/extensions/whatsapp-share</code>). Ne supprimez pas ce dossier — Chrome en a besoin pour fonctionner.</p>
+          <p>Téléchargez <code>share-translate-v3.zip</code> et décompressez-le dans un dossier permanent (ex. : <code>Documents/extensions/share-translate</code>). Ne supprimez pas ce dossier — Chrome en a besoin pour fonctionner.</p>
         </div>
       </div>
 
@@ -162,7 +185,7 @@
         <div class="step-num"><div class="step-circle">4</div></div>
         <div class="step-body">
           <h3>Charger l'extension</h3>
-          <p>Cliquez sur <strong>"Charger l'extension non empaquetée"</strong>, naviguez jusqu'au dossier <code>whatsapp-share-translate</code> (celui qui contient <code>manifest.json</code>) et cliquez sur <strong>Sélectionner</strong>.</p>
+          <p>Cliquez sur <strong>"Charger l'extension non empaquetée"</strong>, naviguez jusqu'au dossier <code>share-translate-v3</code> (celui qui contient <code>manifest.json</code>) et cliquez sur <strong>Sélectionner</strong>.</p>
         </div>
       </div>
 
@@ -170,7 +193,7 @@
         <div class="step-num"><div class="step-circle">5</div></div>
         <div class="step-body">
           <h3>Épingler à la barre Chrome</h3>
-          <p>Cliquez sur l'icône puzzle en haut à droite de Chrome, trouvez <strong>"WhatsApp Share + Translate"</strong> et cliquez sur l'épingle pour l'afficher en permanence dans la barre d'outils.</p>
+          <p>Cliquez sur l'icône puzzle en haut à droite de Chrome, trouvez <strong>"Share &amp; Translate"</strong> et cliquez sur l'épingle pour l'afficher en permanence dans la barre d'outils.</p>
         </div>
       </div>
 
@@ -201,7 +224,7 @@
         <div class="step-num"><div class="step-circle">A</div></div>
         <div class="step-body">
           <h3>Via le popup — bouton dans la barre</h3>
-          <p>Sur n'importe quelle page, cliquez sur l'icône WhatsApp dans la barre Chrome. Le popup affiche un aperçu du contenu traduit. Choisissez la langue, vérifiez, puis cliquez sur <strong>"Partager sur WhatsApp"</strong>.</p>
+          <p>Sur n'importe quelle page, cliquez sur l'icône dans la barre Chrome. Le popup affiche un aperçu du contenu traduit. Choisissez la langue, vérifiez, puis cliquez sur le bouton de la plateforme souhaitée : <strong>WhatsApp</strong>, <strong>LinkedIn</strong> ou <strong>X</strong>.</p>
         </div>
       </div>
 
@@ -209,7 +232,7 @@
         <div class="step-num"><div class="step-circle">B</div></div>
         <div class="step-body">
           <h3>Via le clic droit sur une sélection</h3>
-          <p>Sélectionnez un passage de texte sur la page, faites un <strong>clic droit</strong>, puis choisissez <strong>"Partager sur WhatsApp (traduit en français)"</strong>. Seul le texte sélectionné est traduit et envoyé.</p>
+          <p>Sélectionnez un passage de texte sur la page, faites un <strong>clic droit</strong>, puis choisissez <strong>"Share &amp; Translate"</strong> et la plateforme cible dans le sous-menu. Seul le texte sélectionné est traduit et envoyé.</p>
         </div>
       </div>
 
@@ -242,7 +265,13 @@
       <div class="icon" style="margin-top:2px">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
       </div>
-      <p>Les liens présents dans le texte ne sont pas traduits. Ils conservent leur URL d'origine dans le message WhatsApp.</p>
+      <p>Les liens présents dans le texte ne sont pas traduits. Ils conservent leur URL d'origine dans le message, quelle que soit la plateforme.</p>
+    </div>
+    <div class="tip">
+      <div class="icon" style="margin-top:2px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </div>
+      <p>Sur LinkedIn, l'extension extrait automatiquement le texte du post affiché. Ouvrez un post et cliquez sur l'icône.</p>
     </div>
   </section>
 
@@ -286,7 +315,7 @@
 
   <div class="cta-box">
     <h2>Prêt à partager ?</h2>
-    <p>Installez l'extension en moins de 2 minutes et commencez à partager n'importe quelle page traduite vers WhatsApp.</p>
+    <p>Installez l'extension en moins de 2 minutes et commencez à partager n'importe quelle page traduite vers WhatsApp, LinkedIn ou X.</p>
   </div>
 
 </div>
