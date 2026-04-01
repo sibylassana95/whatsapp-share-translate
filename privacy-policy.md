@@ -1,29 +1,99 @@
-Privacy Policy — Share & Translate Chrome Extension
+# Politique de Confidentialité — Share & Translate
 
-Last updated: 2025
+**Dernière mise à jour :** Mars 2026
 
-Share & Translate is a Chrome extension that helps users share and translate web page content to WhatsApp, LinkedIn, and X.
+---
 
-DATA COLLECTED
-This extension does not collect, store, or transmit any personal data to its own servers.
+## Overview
 
-TRANSLATION
-Text content is sent to Google Translate API (translate.googleapis.com) solely for the purpose of translation. This is a client-side request made directly from your browser. Please refer to Google's Privacy Policy for details on how Google processes translation requests.
+Share & Translate est une extension Chrome qui permet de partager et traduire le contenu de pages web vers WhatsApp, LinkedIn et X. Cette politique décrit comment l'extension gère vos données.
 
-LOCAL STORAGE
-The extension stores two user preferences locally in your browser using Chrome's storage API:
-- Your preferred target language
-- Your preferred WhatsApp opening mode (app or web)
-This data never leaves your device.
+---
 
-PERMISSIONS
-- activeTab: To read the current page URL and title
-- scripting: To extract page content (title, description, selected text)
-- contextMenus: To add a right-click share option
-- storage: To save your preferences locally
+## Données Collectées
 
-THIRD-PARTY SERVICES
-The only third-party service used is Google Translate (translate.googleapis.com). No data is shared with WhatsApp, LinkedIn, or X beyond what you explicitly choose to share through their standard sharing interfaces.
+### Aucune donnée personnelle
 
-CONTACT
-For questions about this privacy policy, please open an issue on the extension's GitHub repository.
+Cette extension **ne collecte, ne stocke et ne transmet aucune donnée personnelle** vers ses propres serveurs. Vos informations restent sur votre appareil.
+
+### Traduction
+
+Le texte à traduire est envoyé directement à l'API Google Translate (`translate.googleapis.com`) depuis votre navigateur. Cette requête est effectuée côté client — seul le contenu que vous choisissez de traduire est concerné.
+
+- Google traitement ces requêtes selon sa propre politique de confidentialité
+- Aucune donnée n'est conservée par l'extension après la traduction
+
+---
+
+## Stockage Local
+
+L'extension enregistre uniquement vos préférences dans le stockage local de Chrome :
+
+| Préférence | Description |
+|------------|-------------|
+| Langue cible | Votre langue de traduction préférée |
+| Mode WhatsApp | Choix entre application Desktop ou WhatsApp Web |
+
+Ces données sont stockées uniquement sur votre appareil et ne sont **jamais transmises** à des serveurs tiers.
+
+---
+
+## Permissions Demandées
+
+L'extension requiert les permissions suivantes pour fonctionner :
+
+| Permission | Raison |
+|------------|--------|
+| `activeTab` | Accéder à l'URL et au titre de la page actuelle |
+| `scripting` | Extraire le contenu de la page (titre, description, texte sélectionné) |
+| `contextMenus` | Ajouter l'option de partage dans le menu clic droit |
+| `storage` | Sauvegarder vos préférences localement |
+
+---
+
+## Services Tiers
+
+### Google Translate
+
+Le seul service tiers utilisé est **Google Translate**. Les données envoyées sont :
+
+- Le texte que vous souhaitez traduire
+- La langue source détectée
+- La langue cible choisie
+
+Ces données sont traitées par Google selon : [Politique de confidentialité Google](https://policies.google.com/privacy)
+
+### Plateformes de partage
+
+Lorsque vous partagez du contenu via WhatsApp, LinkedIn ou X, vous utilisez leurs interfaces officielles. L'extension ne transmet **aucune donnée** à ces plateformes — seul le contenu que vous décidez explicitement de partager est envoyé.
+
+---
+
+## Cookies
+
+Cette extension **n'utilise pas de cookies**.
+
+---
+
+## Collecte de données par Google
+
+Cette extension n'utilise pas Google Analytics ni aucun autre service d'analyse.
+
+---
+
+## Modifications de cette Politique
+
+Toute modification majeure de cette politique de confidentialité sera publiée dans cette page et la date de mise à jour sera modifiée en conséquence.
+
+---
+
+## Nous Contacter
+
+Pour toute question concernant cette politique de confidentialité :
+
+- Ouvrez un issue sur le [dépôt GitHub](https://github.com/sibylassana95/share-translate/issues)
+- Ou contactez-moi via [LinkedIn](https://www.linkedin.com/in/sibylassana/)
+
+---
+
+*Cette politique a été conçue pour être claire et transparente. Si vous avez des préoccupations, n'hésitez pas à me contacter.*

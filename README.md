@@ -44,27 +44,19 @@ La détection de la langue source est automatique.
 
 ## Installation
 
+### Option 1 : Chrome Web Store (Recommandé)
+
+[L'ajouter à Chrome](https://chromewebstore.google.com/detail/share-translate/okpefjkmhhnnmcmkcggkamcaloagomjc)
+
+### Option 2 : Fichier ZIP (Mode développeur)
+
 1. **Télécharger et décompresser**
    
-   Téléchargez `share-translate-v3.zip` et décompressez-le dans un dossier permanent (ex: `Documents/extensions/share-translate`). Ne supprimez pas ce dossier.
+   Téléchargez `share-translate-v3.zip` et décompressez-le dans un dossier permanent.
 
-2. **Ouvrir la page des extensions Chrome**
+2. **Charger l'extension**
    
-   ```
-   chrome://extensions
-   ```
-
-3. **Activer le mode développeur**
-   
-   En haut à droite de la page des extensions, activez le toggle **"Mode développeur"**.
-
-4. **Charger l'extension**
-   
-   Cliquez sur **"Charger l'extension non empaquetée"**, naviguez jusqu'au dossier `share-translate-v3` (celui qui contient `manifest.json`) et cliquez sur **Sélectionner**.
-
-5. **Épingler à la barre Chrome**
-   
-   Cliquez sur l'icône puzzle en haut à droite de Chrome, trouvez **"Share & Translate"** et épinglez-le.
+   Ouvrez `chrome://extensions`, activez le **Mode développeur**, puis cliquez sur **"Charger l'extension non empaquetée"** et sélectionnez le dossier.
 
 ## Utilisation
 
